@@ -1,1 +1,32 @@
+/*********************************
+	'Snail'-puzzel
+	Door 
+	Jarrit Boons
+	Cédric Gullentops
+*********************************/
+
+vocabulary V {
+
+	type Rij 	isa int		 
+	type Kolom 	isa int	 
+	type Getal	isa int
+    Toegekend(Rij,Kolom,Getal)
+    Gegeven(Rij,Kolom,Getal)
+
+}
+structure S : V {
+    Getal = {1..3}
+    Gegeven = {}
+    
+    
+}
+theory T : V {
+
+
+}
+
+procedure main(){
+    stdoptions.nbmodels = 1
+    printmodels(modelexpand(T,S))
+}
 
