@@ -4,7 +4,7 @@
 	Jarrit Boons
 	Cédric Gullentops
 
-	Rules:
+	Regels:
 		-Spiraal in sequentie (1,2,3)
 		-Eerste cijfer altijd 1
 		-Laatste cijfer altijd 3
@@ -35,10 +35,8 @@ theory T : V {
     !r,k:2>#{g:Oplossing(r,k,g)}.
     //De gegevens maken deel uit van de oplossing
 	!r,k:Gegeven(r,k,g)=>Oplossing(r,k,g).		
-    //Elke rij bevat slechts één 1, 2 en 3
-   	//!r1,r2,k1,k2: (r1=r2 & k1~=k2)=> Oplossing(r1,k1) ~= Oplossing(r2,k2).
-    //Elke kolom bevat slechts één 1, 2 en 3
-    //!r1,r2,k1,k2: (r1~=r2 & k1=k2) => Oplossing(r1,k1) ~= Oplossing(r2,k2).
+    //Elke rij bevat slechts één 1, 2, 3 en twee lege vakjes
+    //Elke kolom bevat slechts één 1, 2 en 3 en twee lege vakjes
     											
     
 
