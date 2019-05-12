@@ -2,7 +2,7 @@
 	'Snail'-puzzel
 	Door 
 	Jarrit Boons
-	Cédric Gullentops
+	Cedric Gullentops
 
 	Regels:
 		-Spiraal in sequentie (1,2,3)
@@ -14,8 +14,6 @@
 *********************************/
 
 vocabulary V {
-
-	
     type Rij 	isa int		 
 	type Kolom 	isa int	 
 	type Getal	isa int
@@ -25,10 +23,9 @@ vocabulary V {
     NaarVakje(Rij,Kolom):Vakje
     OplossingTabel(Rij,Kolom,Getal)
     OplossingVakje(Vakje,Getal)
-    GeordendOpl()
-    
-
+    GeordendOpl(Index): Vakje
 }
+
 structure S : V {
     Getal = {1..3}								
     Rij = {1..5}
@@ -44,35 +41,39 @@ structure S : V {
     
 	//Vul gegeven waarden in
     GegevenT = {(1,2,1);(3,3,3);(3,5,2);(5,2,2);(5,4,3);}
-    
-    
-    
 }
+
 theory T : V {
-    //Max één getal per vakje
-    
+    //Max een getal per vakje
     !r,k:2>#{g:OplossingTabel(r,k,g)}.
     !v:2>#{g:OplossingVakje(v,g)}.
     
-    !r,k,v,g:OplossingTabel(r,k,g)&v = NaarVakje(r,k)=>OplossingVakje(v,g).
-    !r,k,v,g:OplossingVakje(v,g)&v = NaarVakje(r,k)=>OplossingTabel(r,k,g).
+    //Link oplossingstabel en oplossingsvakje met elkaar
+    !r,k,v,g:OplossingTabel(r,k,g) & v = NaarVakje(r,k) => OplossingVakje(v,g).
+    !r,k,v,g:OplossingVakje(v,g) & v = NaarVakje(r,k) => OplossingTabel(r,k,g).
     
     //De gegevens maken deel uit van de oplossing
-	!r,k,g:GegevenT(r,k,g)=>OplossingTabel(r,k,g).	
+	!r,k,g:GegevenT(r,k,g) => OplossingTabel(r,k,g).	
     
-    //Elke rij bevat exact één 1, 2 en 3 
-    !k,g:#{r:OplossingTabel(r,k,g)}=1.
+    //Elke kolom bevat exact een 1, 2 en 3 
+    !k,g:#{r:OplossingTabel(r,k,g)} = 1.
     
-    //Elke rij bevat exact één 1, 2 en 3 
-    !r,g:#{k:OplossingTabel(r,k,g)}=1.											
+    //Elke rij bevat exact een 1, 2 en 3 
+    !r,g:#{k:OplossingTabel(r,k,g)} = 1.		
     
-    //
-    Oplossing(v,g)<= ?i:(i,v,g).
-
+    //Volgorde 1,2,3
+    !i[Index]: GeordendOpl(i) = v & OplossingVakje(v,g) => g=(i-1)%3+1.
+    
+    //Volgorde vakjes
+    !i[Index]: i<15 => GeordendOpl(i) < GeordendOpl(i+1).
+    !v:?i: OplossingVakje(v,g) => GeordendOpl(i) = v.
+    
+    //Link oplossingsvakjes met geordendeopl
+    !i[Index],j[Index]: ?v: i=1 & OplossingVakje(v,g) & v<GeordendOpl(j) & j>i => GeordendOpl(i)= v.
+    !i[Index]: ?v: i~=1 & OplossingVakje(v,g) & GeordendOpl(i-1)<v & v<GeordendOpl(i+1) => GeordendOpl(i)= v.
 }
 
 procedure main(){
-    stdoptions.nbmodels = 1
+    stdoptions.nbmodels = 0
     printmodels(modelexpand(T,S))
 }
-
